@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple Wordle Game</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+        .header {
+            background-color: #333;
+            color: white;
+            padding: 10px 0;
+        }
+        .nav {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+        }
+        .nav-item {
+            margin: 0 15px;
+        }
+        .nav-link {
+            color: white;
+            text-decoration: none;
+            font-size: 18px;
+        }
+        .nav-link:hover {
+            text-decoration: underline;
+        }
+        .wordle-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 50px);
+            gap: 10px;
+            justify-content: center;
+            margin-top: 50px;
+        }
+        .cell {
+            width: 50px;
+            height: 50px;
+            border: 2px solid #000;
+            font-size: 24px;
+            text-align: center;
+            line-height: 50px;
+            background-color: #fff;
+            text-transform: uppercase;
+        }
+        .cell.correct {
+            background-color: green;
+            color: white;
+        }
+        .cell.partial {
+            background-color: yellow;
+            color: black;
+        }
+        .cell.wrong {
+            background-color: gray;
+            color: white;
+        }
+        #input-word {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <ul class="nav">
+            <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4" href="../index.html">Home</a></li>
+            <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4" href="scratch.html">Porsche Cars</a></li>
+        </ul>
+    </header>
+
+    <h1>Simple Wordle Game</h1>
+    <div id="game-container">
+        <div class="wordle-grid" id="wordle-grid"></div>
+        <div>
+            <input type="text" id="input-word" maxlength="5" placeholder="Enter a 5-letter word">
+            <button onclick="submitWord()">Submit</button>
+        </div>
+        <p id="message"></p>
+    </div>
+
+    <script>
+        const secretWord = "APPLE";
+        const maxGuesses = 6;
+        let currentRow = 0;
+
+        const grid = document.getElementById("wordle-grid");
+        const message = document.getElementById("message");
+
+        for (let i = 0; i < maxGuesses; i++) {
+            for (let j = 0; j < 5; j++) {
+                const cell = document.createElement("div");
+                cell.classList.add("cell");
+                cell.setAttribute("id", `cell-${i}-${j}`);
+                grid.appendChild(cell);
+            }
+        }
+
+        function submitWord() {
+            const inputWord = document.getElementById("input-word").value.toUpperCase();
+            if (inputWord.length !== 5) {
+                message.textContent = "Please enter a 5-letter word.";
+                return;
+            }
+
+            if (currentRow >= maxGuesses) {
+                message.textContent = "Game over! You've used all your guesses.";
+                return;
+            }
+
+            for (let i = 0; i < 5; i++) {
+                const cell = document.getElementById(`cell-${currentRow}-${i}`);
+                cell.textContent = inputWord[i];
+
+                if (inputWord[i] === secretWord[i]) {
+                    cell.classList.add("correct");
+                } else if (secretWord.includes(inputWord[i])) {
+                    cell.classList.add("partial");
+                } else {
+                    cell.classList.add("wrong");
+                }
+            }
+
+            if (inputWord === secretWord) {
+                message.textContent = "Congratulations! You've guessed the word!";
+                return;
+            }
+
+            currentRow++;
+            if (currentRow === maxGuesses) {
+                message.textContent = `Game over! The word was ${secretWord}.`;
+            }
+        }
+    </script>
+</body>
+</html>
